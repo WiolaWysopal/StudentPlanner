@@ -15,6 +15,8 @@ import android.content.Intent;
 
 public class AddTaskActivity extends AppCompatActivity {
 
+    public static final String EXTRA_TASK_TITLE = "TASK_TITLE";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +36,7 @@ public class AddTaskActivity extends AppCompatActivity {
                 return;
             }
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("TASK_TITLE", taskTitle);
+            resultIntent.putExtra(EXTRA_TASK_TITLE, taskTitle);
             setResult(RESULT_OK, resultIntent);
             finish();
         });
