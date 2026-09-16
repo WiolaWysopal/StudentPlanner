@@ -10,4 +10,5 @@
     <string name="add_task_title">Add task</string>
     <string name="task_title_hint">Task title</string>
     <string name="save_task">Save task</string>
+    <string name="task_title_required">Task title is required</string>
 </resources>
