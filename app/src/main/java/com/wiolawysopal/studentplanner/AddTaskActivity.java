@@ -11,6 +11,8 @@ import androidx.core.view.WindowInsetsCompat;
 import android.widget.Button;
 import android.widget.EditText;
 
+import android.content.Intent;
+
 public class AddTaskActivity extends AppCompatActivity {
 
     @Override
@@ -31,6 +33,10 @@ public class AddTaskActivity extends AppCompatActivity {
                 taskTitleEditText.setError(getString(R.string.task_title_required));
                 return;
             }
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("TASK_TITLE", taskTitle);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
     }
 }
