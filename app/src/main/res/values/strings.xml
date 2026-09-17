@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">StudentPlanner</string>
+    <string name="main_title">Student Planner</string>
+    <string name="main_subtitle">Organize your studies</string>
+    <string name="tasks_title">Your tasks</string>
+    <string name="no_tasks">No tasks yet</string>
+    <string name="no_tasks_hint">Add your first task to get started</string>
+    <string name="add_task">Add task</string>
+    <string name="add_task_title">Add task</string>
+    <string name="task_title_hint">Task title</string>
+    <string name="save_task">Save task</string>
+    <string name="task_title_required">Task title is required</string>
+    <string name="delete_task_title">Delete task</string>
+    <string name="delete_task_message">Are you sure you want to delete this task?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 </resources>

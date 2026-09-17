@@ -4,14 +4,22 @@ Student Planner is an Android application designed to help students organize the
 
 The project is being developed as a practical way to learn Android application development using Java and Android Studio.
 
+## Current Features
+
+- Create tasks
+- Display tasks in a RecyclerView
+- Delete tasks with a confirmation dialog
+- Store tasks locally using Room Database
+- Restore saved tasks after restarting the application
+- Display an empty state when no tasks are available
+
 ## Planned Features
 
-- Create, edit, and delete tasks
+- Edit existing tasks
 - Assign tasks to subjects
 - Set deadlines for assignments and exams
 - Mark tasks as completed
 - Organize tasks by subject and due date
-- Store application data locally
 - Display reminders for upcoming deadlines
 
 ## Tech Stack
@@ -21,12 +29,17 @@ The project is being developed as a practical way to learn Android application d
 - XML
 - Android Studio
 - Gradle
+- AndroidX
+- RecyclerView
+- Room Database
 
 ## Project Status
 
 🚧 **In development**
 
-The project is currently in its initial development stage.
+The core task management flow is implemented, including task creation, local persistence, task display, and deletion.
+
+Further development will focus on expanding task details, adding subjects and deadlines, and implementing task completion and editing.
 
 ## Requirements
 
