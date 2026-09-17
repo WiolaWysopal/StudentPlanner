@@ -3,6 +3,7 @@ package com.wiolawysopal.studentplanner;
 import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private ExecutorService databaseExecutor;
     private TextView emptyTasksTextView;
     private TextView emptyTasksHintTextView;
+    private TaskAdapter taskAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,23 @@ public class MainActivity extends AppCompatActivity {
         tasks = new ArrayList<>();
 
         RecyclerView tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
-        TaskAdapter taskAdapter = new TaskAdapter(tasks);
+        taskAdapter = new TaskAdapter(tasks, task -> {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.delete_task_title)
+                    .setMessage(R.string.delete_task_message)
+                    .setPositiveButton(R.string.delete, (dialog, which) -> {
+                        databaseExecutor.execute(() -> {
+                            database.taskDao().delete(task);
+                        });
+
+                        int position = tasks.indexOf(task);
+                        tasks.remove(task);
+                        taskAdapter.notifyItemRemoved(position);
+                        updateEmptyState();
+                    })
+                    .setNegativeButton(R.string.cancel,null)
+                    .show();
+        });
 
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         tasksRecyclerView.setAdapter(taskAdapter);
@@ -71,12 +89,15 @@ public class MainActivity extends AppCompatActivity {
                         Task task = new Task(taskTitle);
 
                         databaseExecutor.execute(() -> {
-                            database.taskDao().insert(task);
-                        });
+                            long taskId = database.taskDao().insert(task);
+                            task.setId((int) taskId);
 
-                        tasks.add(task);
-                        taskAdapter.notifyItemInserted(tasks.size()-1);
-                        updateEmptyState();
+                            runOnUiThread(() -> {
+                               tasks.add(task);
+                               taskAdapter.notifyItemInserted(tasks.size() - 1);
+                               updateEmptyState();
+                            });
+                        });
                     }
                 }
         );
