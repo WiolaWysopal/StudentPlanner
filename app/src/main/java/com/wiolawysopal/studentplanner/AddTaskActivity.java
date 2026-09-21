@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import android.content.Intent;
 
@@ -23,11 +24,14 @@ public class AddTaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_add_task);
+        TextView addTaskTitleTextView = findViewById(R.id.addTaskTitleTextView);
         EditText taskTitleEditText = findViewById(R.id.taskTitleEditText);
         Button saveTaskButton = findViewById(R.id.saveTaskButton);
         String existingTaskTitle = getIntent().getStringExtra(EXTRA_EDIT_TASK_TITLE);
         if (existingTaskTitle != null) {
             taskTitleEditText.setText(existingTaskTitle);
+            addTaskTitleTextView.setText(R.string.edit_task_title);
+            saveTaskButton.setText(R.string.save_changes);
         }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
