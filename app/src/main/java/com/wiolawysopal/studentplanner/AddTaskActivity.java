@@ -16,6 +16,7 @@ import android.content.Intent;
 public class AddTaskActivity extends AppCompatActivity {
 
     public static final String EXTRA_TASK_TITLE = "TASK_TITLE";
+    public static final String EXTRA_EDIT_TASK_TITLE = "EDIT_TASK_TITLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +25,10 @@ public class AddTaskActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_task);
         EditText taskTitleEditText = findViewById(R.id.taskTitleEditText);
         Button saveTaskButton = findViewById(R.id.saveTaskButton);
+        String existingTaskTitle = getIntent().getStringExtra(EXTRA_EDIT_TASK_TITLE);
+        if (existingTaskTitle != null) {
+            taskTitleEditText.setText(existingTaskTitle);
+        }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
