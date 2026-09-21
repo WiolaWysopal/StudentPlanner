@@ -1,28 +1,29 @@
-# Student Planner
+# 📅 Student Planner
 
 Student Planner is an Android application designed to help students organize their academic tasks, deadlines, and subjects.
 
 The project is being developed as a practical way to learn Android application development using Java and Android Studio.
 
-## Current Features
+## 🛠️ Current Features
 
 - Create tasks
+- Edit existing tasks
 - Display tasks in a RecyclerView
 - Delete tasks with a confirmation dialog
 - Store tasks locally using Room Database
 - Restore saved tasks after restarting the application
 - Display an empty state when no tasks are available
+- Validate task titles before saving
 
-## Planned Features
+## 🔮 Planned Features
 
-- Edit existing tasks
 - Assign tasks to subjects
 - Set deadlines for assignments and exams
 - Mark tasks as completed
 - Organize tasks by subject and due date
 - Display reminders for upcoming deadlines
 
-## Tech Stack
+## ⚙️ Tech Stack
 
 - Java
 - Android SDK
@@ -33,19 +34,26 @@ The project is being developed as a practical way to learn Android application d
 - RecyclerView
 - Room Database
 
-## Project Status
+## 📊 Project Status
 
 🚧 **In development**
 
-The core task management flow is implemented, including task creation, local persistence, task display, and deletion.
+The core task management flow is implemented, including task creation, editing, deletion, local persistence, and task display.
 
-Further development will focus on expanding task details, adding subjects and deadlines, and implementing task completion and editing.
+The application currently supports the basic CRUD operations for tasks:
 
-## Requirements
+- **Create** — add new tasks
+- **Read** — display saved tasks
+- **Update** — edit existing tasks
+- **Delete** — remove tasks with confirmation
+
+Further development will focus on expanding task details, adding subjects and deadlines, implementing task completion, and adding reminders.
+
+## 📋 Requirements
 
 - Android 7.0 (API 24) or newer
 - Android Studio
 
-## Development
+## 🚀 Development
 
 The project follows a feature-based Git workflow. New functionality is developed on separate branches and merged into `main` through pull requests.
