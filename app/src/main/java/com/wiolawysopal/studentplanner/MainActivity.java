@@ -49,14 +49,43 @@ public class MainActivity extends AppCompatActivity {
         tasks = new ArrayList<>();
 
         RecyclerView tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
-        taskAdapter = new TaskAdapter(tasks, task -> {
-           taskBeingEdited = task;
+        taskAdapter = new TaskAdapter(
+                tasks,
+                task -> {
+                    taskBeingEdited = task;
 
-           Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
-           intent.putExtra(AddTaskActivity.EXTRA_EDIT_TASK_TITLE, task.getTitle());
+                    Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
+                    intent.putExtra(
+                            AddTaskActivity.EXTRA_EDIT_TASK_TITLE,
+                            task.getTitle()
+                    );
 
-           editTaskLauncher.launch(intent);
-        });
+                    editTaskLauncher.launch(intent);
+                },
+                task -> {
+                    new AlertDialog.Builder(this)
+                            .setTitle(R.string.delete_task_title)
+                            .setMessage(R.string.delete_task_message)
+                            .setPositiveButton(R.string.delete, (dialog, which) -> {
+                                databaseExecutor.execute(() -> {
+                                    database.taskDao().delete(task);
+
+                                    runOnUiThread(() -> {
+                                        int position = tasks.indexOf(task);
+
+                                        if (position != -1) {
+                                            tasks.remove(position);
+                                            taskAdapter.notifyItemRemoved(position);
+                                        }
+
+                                        updateEmptyState();
+                                    });
+                                });
+                            })
+                            .setNegativeButton(R.string.cancel, null)
+                            .show();
+                }
+        );
 
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         tasksRecyclerView.setAdapter(taskAdapter);
@@ -99,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null && taskBeingEdited != null) {
-                        String updatedTitle = result.getData(). getStringExtra(AddTaskActivity.EXTRA_TASK_TITLE);
+                        String updatedTitle = result.getData().getStringExtra(AddTaskActivity.EXTRA_TASK_TITLE);
                         taskBeingEdited.setTitle(updatedTitle);
                         databaseExecutor.execute(() -> {
                             database.taskDao().update(taskBeingEdited);
