@@ -134,7 +134,10 @@ public class MainActivity extends AppCompatActivity {
                             database.taskDao().update(taskBeingEdited);
                             runOnUiThread(() -> {
                                 int position = tasks.indexOf(taskBeingEdited);
-                                taskAdapter.notifyItemChanged(position);
+
+                                if (position != -1) {
+                                    taskAdapter.notifyItemChanged(position);
+                                }
                                 taskBeingEdited = null;
                             });
                         });
