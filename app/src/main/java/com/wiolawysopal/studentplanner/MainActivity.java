@@ -52,15 +52,9 @@ public class MainActivity extends AppCompatActivity {
         taskAdapter = new TaskAdapter(
                 tasks,
                 task -> {
-                    taskBeingEdited = task;
-
-                    Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
-                    intent.putExtra(
-                            AddTaskActivity.EXTRA_EDIT_TASK_TITLE,
-                            task.getTitle()
-                    );
-
-                    editTaskLauncher.launch(intent);
+                    Intent intent = new Intent(MainActivity.this, TaskDetailsActivity.class);
+                    intent.putExtra(TaskDetailsActivity.EXTRA_TASK_TITLE, task.getTitle());
+                    startActivity(intent);
                 },
                 task -> {
                     new AlertDialog.Builder(this)

@@ -16,4 +16,5 @@
     <string name="cancel">Cancel</string>
     <string name="edit_task_title">Edit task</string>
     <string name="save_changes">Save changes</string>
+    <string name="task_details_title">Task Details</string>
 </resources>
