@@ -6,13 +6,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
     tools:context=".TaskDetailsActivity">
 
     <TextView
         android:id="@+id/taskDetailsTitleTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="24dp"
         android:text="@string/task_details_title"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -24,11 +26,23 @@
         android:id="@+id/taskDetailsTaskTitleTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginTop="24dp"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/taskDetailsTitleTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="Prepare project for classes" />
+
+    <Button
+        android:id="@+id/editTaskButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/edit_task"
+        app:layout_constraintTop_toBottomOf="@id/taskDetailsTaskTitleTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

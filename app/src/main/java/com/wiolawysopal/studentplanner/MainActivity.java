@@ -23,8 +23,6 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> addTaskLauncher;
-    private ActivityResultLauncher<Intent> editTaskLauncher;
-    private Task taskBeingEdited;
     private ArrayList<Task> tasks;
     private AppDatabase database;
     private ExecutorService databaseExecutor;
@@ -87,16 +85,6 @@ public class MainActivity extends AppCompatActivity {
         emptyTasksTextView = findViewById(R.id.emptyTasksTextView);
         emptyTasksHintTextView = findViewById(R.id.emptyTasksHintTextView);
 
-        databaseExecutor.execute(() -> {
-            List<Task> savedTasks = database.taskDao().getAll();
-
-            runOnUiThread(() -> {
-                tasks.addAll(savedTasks);
-                taskAdapter.notifyDataSetChanged();
-                updateEmptyState();
-            });
-        });
-
         addTaskLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -118,28 +106,6 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        editTaskLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null && taskBeingEdited != null) {
-                        String updatedTitle = result.getData().getStringExtra(AddTaskActivity.EXTRA_TASK_TITLE);
-                        taskBeingEdited.setTitle(updatedTitle);
-                        databaseExecutor.execute(() -> {
-                            database.taskDao().update(taskBeingEdited);
-                            runOnUiThread(() -> {
-                                int position = tasks.indexOf(taskBeingEdited);
-
-                                if (position != -1) {
-                                    taskAdapter.notifyItemChanged(position);
-                                }
-                                taskBeingEdited = null;
-                            });
-                        });
-
-                    }
-                }
-        );
-
         Button addTaskButton = findViewById(R.id.addTaskButton);
         addTaskButton.setOnClickListener(v -> {
            Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
@@ -152,6 +118,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (database == null || databaseExecutor == null || taskAdapter == null) {
+            return;
+        }
+
+        databaseExecutor.execute(() -> {
+            List<Task> savedTasks = database.taskDao().getAll();
+
+            runOnUiThread(() -> {
+                tasks.clear();
+                tasks.addAll(savedTasks);
+                taskAdapter.notifyDataSetChanged();
+                updateEmptyState();
+            });
+        });
+    }
+
     private void updateEmptyState() {
         if (tasks.isEmpty()) {
             emptyTasksTextView.setVisibility(View.VISIBLE);
@@ -161,4 +147,5 @@ public class MainActivity extends AppCompatActivity {
             emptyTasksHintTextView.setVisibility(View.GONE);
         }
     }
+
 }

@@ -3,6 +3,7 @@ package com.wiolawysopal.studentplanner;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -13,10 +14,18 @@ import androidx.room.Room;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import android.content.Intent;
+import android.widget.Button;
+
+import androidx.activity.result.ActivityResultLauncher;
+
 public class TaskDetailsActivity extends AppCompatActivity {
     public static final String EXTRA_TASK_ID = "TASK_ID";
     private AppDatabase database;
     private ExecutorService databaseExecutor;
+
+    private ActivityResultLauncher<Intent> editTaskLauncher;
+    private Task currentTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +39,48 @@ public class TaskDetailsActivity extends AppCompatActivity {
                 "student_planner_database"
         ).build();
         databaseExecutor = Executors.newSingleThreadExecutor();
-        TextView taskTitleTextView = findViewById(R.id.taskDetailsTaskTitleTextView);
-        databaseExecutor.execute(() -> {
-            Task task = database.taskDao().getById(taskId);
+        editTaskLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null && currentTask != null) {
+                        String updatedTitle = result.getData()
+                                .getStringExtra(AddTaskActivity.EXTRA_TASK_TITLE);
+                        currentTask.setTitle(updatedTitle);
+                        databaseExecutor.execute(() -> {
+                            database.taskDao().update(currentTask);
 
-            if (task != null) {
+                            runOnUiThread(() -> {
+                                TextView taskTitleTextView = findViewById(R.id.taskDetailsTaskTitleTextView);
+                                taskTitleTextView.setText(currentTask.getTitle());
+                            });
+                        });
+
+
+                    }
+                }
+        );
+        TextView taskTitleTextView = findViewById(R.id.taskDetailsTaskTitleTextView);
+
+        Button editTaskButton = findViewById(R.id.editTaskButton);
+
+        editTaskButton.setOnClickListener(v -> {
+            if (currentTask == null) {
+                return;
+            }
+            Intent intent = new Intent(TaskDetailsActivity.this, AddTaskActivity.class);
+            intent.putExtra(
+                    AddTaskActivity.EXTRA_EDIT_TASK_TITLE,
+                    currentTask.getTitle()
+            );
+
+            editTaskLauncher.launch(intent);
+        });
+
+        databaseExecutor.execute(() -> {
+            currentTask = database.taskDao().getById(taskId);
+            if (currentTask != null) {
                 runOnUiThread(() -> {
-                    taskTitleTextView.setText(task.getTitle());
+                    taskTitleTextView.setText(currentTask.getTitle());
                 });
             }
         });
