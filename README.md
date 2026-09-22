@@ -7,51 +7,83 @@ The project is being developed as a practical way to learn Android application d
 ## 🛠️ Current Features
 
 - Create tasks
-- Edit existing tasks
+
+- View task details on a dedicated screen
+
+- Edit existing tasks from the task details screen
+
 - Display tasks in a RecyclerView
+
 - Delete tasks with a confirmation dialog
+
 - Store tasks locally using Room Database
+
+- Load individual task details from the database
+
 - Restore saved tasks after restarting the application
+
+- Automatically refresh the task list after editing
+
 - Display an empty state when no tasks are available
+
 - Validate task titles before saving
 
 ## 🔮 Planned Features
 
+- Add descriptions and additional task details
+
 - Assign tasks to subjects
+
 - Set deadlines for assignments and exams
+
 - Mark tasks as completed
+
 - Organize tasks by subject and due date
+
 - Display reminders for upcoming deadlines
 
 ## ⚙️ Tech Stack
 
 - Java
+
 - Android SDK
+
 - XML
+
 - Android Studio
+
 - Gradle
+
 - AndroidX
+
 - RecyclerView
+
 - Room Database
 
 ## 📊 Project Status
 
 🚧 **In development**
 
-The core task management flow is implemented, including task creation, editing, deletion, local persistence, and task display.
+The core task management flow is implemented, including task creation, task details, editing, deletion, local persistence, and task display.
 
 The application currently supports the basic CRUD operations for tasks:
 
-- **Create** — add new tasks
-- **Read** — display saved tasks
-- **Update** — edit existing tasks
-- **Delete** — remove tasks with confirmation
+- **Create** - add new tasks
 
-Further development will focus on expanding task details, adding subjects and deadlines, implementing task completion, and adding reminders.
+- **Read** - display saved tasks and open a dedicated task details screen
+
+- **Update** - edit existing tasks from the task details screen
+
+- **Delete** - remove tasks with confirmation
+
+Task details are loaded from Room Database using the task ID, and the main task list is refreshed after changes are made.
+
+Further development will focus on expanding task details with additional information, adding subjects and deadlines, implementing task completion, and adding reminders.
 
 ## 📋 Requirements
 
 - Android 7.0 (API 24) or newer
+
 - Android Studio
 
 ## 🚀 Development
