@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 tasks,
                 task -> {
                     Intent intent = new Intent(MainActivity.this, TaskDetailsActivity.class);
-                    intent.putExtra(TaskDetailsActivity.EXTRA_TASK_TITLE, task.getTitle());
+                    intent.putExtra(TaskDetailsActivity.EXTRA_TASK_ID, task.getId());
                     startActivity(intent);
                 },
                 task -> {

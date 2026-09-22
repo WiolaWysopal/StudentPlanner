@@ -20,4 +20,7 @@ public interface TaskDao {
 
     @Query("SELECT * FROM tasks ORDER BY id ASC")
     List<Task> getAll();
+
+    @Query("SELECT * FROM tasks WHERE id = :id LIMIT 1")
+    Task getById(int id);
 }
