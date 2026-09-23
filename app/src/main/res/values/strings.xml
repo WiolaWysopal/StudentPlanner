@@ -18,4 +18,10 @@
     <string name="save_changes">Save changes</string>
     <string name="task_details_title">Task Details</string>
     <string name="edit_task">Edit task</string>
+    <string name="task_description_hint">Description</string>
+    <string name="task_due_date_hint">Due date</string>
+    <string name="task_description_label">Description</string>
+    <string name="task_due_date_label">Due date</string>
+    <string name="no_task_description">No description</string>
+    <string name="no_task_due_date">No due date</string>
 </resources>

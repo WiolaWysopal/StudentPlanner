@@ -27,6 +27,10 @@ public class TaskDetailsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> editTaskLauncher;
     private Task currentTask;
 
+    private TextView taskTitleTextView;
+    private TextView taskDescriptionTextView;
+    private TextView taskDueDateTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +41,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
                 getApplicationContext(),
                 AppDatabase.class,
                 "student_planner_database"
-        ).build();
+        ).fallbackToDestructiveMigration().build();
         databaseExecutor = Executors.newSingleThreadExecutor();
         editTaskLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -45,23 +49,33 @@ public class TaskDetailsActivity extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null && currentTask != null) {
                         String updatedTitle = result.getData()
                                 .getStringExtra(AddTaskActivity.EXTRA_TASK_TITLE);
+                        String updatedDescription = result.getData()
+                                .getStringExtra(AddTaskActivity.EXTRA_TASK_DESCRIPTION);
+
+                        String updatedDueDate = result.getData()
+                                .getStringExtra(AddTaskActivity.EXTRA_TASK_DUE_DATE);
                         currentTask.setTitle(updatedTitle);
+                        currentTask.setDescription(updatedDescription);
+                        currentTask.setDueDate(updatedDueDate);
                         databaseExecutor.execute(() -> {
                             database.taskDao().update(currentTask);
 
-                            runOnUiThread(() -> {
-                                TextView taskTitleTextView = findViewById(R.id.taskDetailsTaskTitleTextView);
-                                taskTitleTextView.setText(currentTask.getTitle());
-                            });
+                            runOnUiThread(this::displayTaskDetails);
                         });
-
-
                     }
                 }
         );
-        TextView taskTitleTextView = findViewById(R.id.taskDetailsTaskTitleTextView);
+        taskTitleTextView =
+                findViewById(R.id.taskDetailsTaskTitleTextView);
 
-        Button editTaskButton = findViewById(R.id.editTaskButton);
+        taskDescriptionTextView =
+                findViewById(R.id.taskDetailsDescriptionTextView);
+
+        taskDueDateTextView =
+                findViewById(R.id.taskDetailsDueDateTextView);
+
+        Button editTaskButton =
+                findViewById(R.id.editTaskButton);
 
         editTaskButton.setOnClickListener(v -> {
             if (currentTask == null) {
@@ -73,15 +87,23 @@ public class TaskDetailsActivity extends AppCompatActivity {
                     currentTask.getTitle()
             );
 
+            intent.putExtra(
+                    AddTaskActivity.EXTRA_EDIT_TASK_DESCRIPTION,
+                    currentTask.getDescription()
+            );
+
+            intent.putExtra(
+                    AddTaskActivity.EXTRA_EDIT_TASK_DUE_DATE,
+                    currentTask.getDueDate()
+            );
+
             editTaskLauncher.launch(intent);
         });
 
         databaseExecutor.execute(() -> {
             currentTask = database.taskDao().getById(taskId);
             if (currentTask != null) {
-                runOnUiThread(() -> {
-                    taskTitleTextView.setText(currentTask.getTitle());
-                });
+                runOnUiThread(this::displayTaskDetails);
             }
         });
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -89,5 +111,27 @@ public class TaskDetailsActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    private void displayTaskDetails() {
+        if (currentTask == null) {
+            return;
+        }
+
+        taskTitleTextView.setText(currentTask.getTitle());
+
+        String description = currentTask.getDescription();
+        if (description == null || description.isEmpty()) {
+            taskDescriptionTextView.setText(R.string.no_task_description);
+        } else {
+            taskDescriptionTextView.setText(description);
+        }
+
+        String dueDate = currentTask.getDueDate();
+        if (dueDate == null || dueDate.isEmpty()) {
+            taskDueDateTextView.setText(R.string.no_task_due_date);
+        } else {
+            taskDueDateTextView.setText(dueDate);
+        }
     }
 }

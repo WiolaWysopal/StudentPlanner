@@ -6,58 +6,38 @@ The project is being developed as a practical way to learn Android application d
 
 ## 🛠️ Current Features
 
-- Create tasks
-
+- Create tasks with a title, optional description, and due date
 - View task details on a dedicated screen
-
+- Display task title, description, and due date
+- Display placeholders when optional task details are not provided
 - Edit existing tasks from the task details screen
-
+- Update task title, description, and due date
 - Display tasks in a RecyclerView
-
 - Delete tasks with a confirmation dialog
-
 - Store tasks locally using Room Database
-
 - Load individual task details from the database
-
 - Restore saved tasks after restarting the application
-
-- Automatically refresh the task list after editing
-
+- Automatically refresh task data after editing
 - Display an empty state when no tasks are available
-
 - Validate task titles before saving
 
 ## 🔮 Planned Features
 
-- Add descriptions and additional task details
-
 - Assign tasks to subjects
-
-- Set deadlines for assignments and exams
-
 - Mark tasks as completed
-
 - Organize tasks by subject and due date
-
+- Add sorting and filtering options
 - Display reminders for upcoming deadlines
 
 ## ⚙️ Tech Stack
 
 - Java
-
 - Android SDK
-
 - XML
-
 - Android Studio
-
 - Gradle
-
 - AndroidX
-
 - RecyclerView
-
 - Room Database
 
 ## 📊 Project Status
@@ -68,22 +48,20 @@ The core task management flow is implemented, including task creation, task deta
 
 The application currently supports the basic CRUD operations for tasks:
 
-- **Create** - add new tasks
-
+- **Create** - add new tasks with a title, optional description, and due date
 - **Read** - display saved tasks and open a dedicated task details screen
-
-- **Update** - edit existing tasks from the task details screen
-
+- **Update** - edit task titles, descriptions, and due dates from the task details screen
 - **Delete** - remove tasks with confirmation
 
-Task details are loaded from Room Database using the task ID, and the main task list is refreshed after changes are made.
+Task details are loaded from Room Database using the task ID. Changes made during editing are persisted locally and immediately reflected on the task details screen.
 
-Further development will focus on expanding task details with additional information, adding subjects and deadlines, implementing task completion, and adding reminders.
+Tasks can include an optional description and due date. When these fields are not provided, the task details screen displays appropriate placeholders.
+
+Further development will focus on adding subjects, task completion, sorting and filtering, and reminders for upcoming deadlines.
 
 ## 📋 Requirements
 
 - Android 7.0 (API 24) or newer
-
 - Android Studio
 
 ## 🚀 Development
