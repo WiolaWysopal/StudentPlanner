@@ -89,8 +89,16 @@ public class MainActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        String taskTitle = result.getData().getStringExtra(AddTaskActivity.EXTRA_TASK_TITLE);
-                        Task task = new Task(taskTitle, "", "");
+                        String taskTitle = result.getData()
+                                .getStringExtra(AddTaskActivity.EXTRA_TASK_TITLE);
+
+                        String taskDescription = result.getData()
+                                .getStringExtra(AddTaskActivity.EXTRA_TASK_DESCRIPTION);
+
+                        String taskDueDate = result.getData()
+                                .getStringExtra(AddTaskActivity.EXTRA_TASK_DUE_DATE);
+
+                        Task task = new Task(taskTitle, taskDescription, taskDueDate);
 
                         databaseExecutor.execute(() -> {
                             long taskId = database.taskDao().insert(task);

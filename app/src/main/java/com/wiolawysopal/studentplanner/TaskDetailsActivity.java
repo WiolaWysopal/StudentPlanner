@@ -45,23 +45,41 @@ public class TaskDetailsActivity extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null && currentTask != null) {
                         String updatedTitle = result.getData()
                                 .getStringExtra(AddTaskActivity.EXTRA_TASK_TITLE);
+                        String updatedDescription = result.getData()
+                                .getStringExtra(AddTaskActivity.EXTRA_TASK_DESCRIPTION);
+
+                        String updatedDueDate = result.getData()
+                                .getStringExtra(AddTaskActivity.EXTRA_TASK_DUE_DATE);
                         currentTask.setTitle(updatedTitle);
+                        currentTask.setDescription(updatedDescription);
+                        currentTask.setDueDate(updatedDueDate);
                         databaseExecutor.execute(() -> {
                             database.taskDao().update(currentTask);
 
                             runOnUiThread(() -> {
                                 TextView taskTitleTextView = findViewById(R.id.taskDetailsTaskTitleTextView);
+                                TextView taskDescriptionTextView = findViewById(R.id.taskDetailsDescriptionTextView);
+                                TextView taskDueDateTextView = findViewById(R.id.taskDetailsDueDateTextView);
+
                                 taskTitleTextView.setText(currentTask.getTitle());
+                                taskDescriptionTextView.setText(currentTask.getDescription());
+                                taskDueDateTextView.setText(currentTask.getDueDate());
                             });
                         });
-
-
                     }
                 }
         );
-        TextView taskTitleTextView = findViewById(R.id.taskDetailsTaskTitleTextView);
+        TextView taskTitleTextView =
+                findViewById(R.id.taskDetailsTaskTitleTextView);
 
-        Button editTaskButton = findViewById(R.id.editTaskButton);
+        TextView taskDescriptionTextView =
+                findViewById(R.id.taskDetailsDescriptionTextView);
+
+        TextView taskDueDateTextView =
+                findViewById(R.id.taskDetailsDueDateTextView);
+
+        Button editTaskButton =
+                findViewById(R.id.editTaskButton);
 
         editTaskButton.setOnClickListener(v -> {
             if (currentTask == null) {
@@ -73,6 +91,16 @@ public class TaskDetailsActivity extends AppCompatActivity {
                     currentTask.getTitle()
             );
 
+            intent.putExtra(
+                    AddTaskActivity.EXTRA_EDIT_TASK_DESCRIPTION,
+                    currentTask.getDescription()
+            );
+
+            intent.putExtra(
+                    AddTaskActivity.EXTRA_EDIT_TASK_DUE_DATE,
+                    currentTask.getDueDate()
+            );
+
             editTaskLauncher.launch(intent);
         });
 
@@ -81,6 +109,8 @@ public class TaskDetailsActivity extends AppCompatActivity {
             if (currentTask != null) {
                 runOnUiThread(() -> {
                     taskTitleTextView.setText(currentTask.getTitle());
+                    taskDescriptionTextView.setText(currentTask.getDescription());
+                    taskDueDateTextView.setText(currentTask.getDueDate());
                 });
             }
         });
