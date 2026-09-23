@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 getApplicationContext(),
                 AppDatabase.class,
                 "student_planner_database"
-        ).build();
+        ).fallbackToDestructiveMigration().build();
 
         databaseExecutor = Executors.newSingleThreadExecutor();
 
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         String taskTitle = result.getData().getStringExtra(AddTaskActivity.EXTRA_TASK_TITLE);
-                        Task task = new Task(taskTitle);
+                        Task task = new Task(taskTitle, "", "");
 
                         databaseExecutor.execute(() -> {
                             long taskId = database.taskDao().insert(task);

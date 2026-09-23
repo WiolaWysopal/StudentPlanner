@@ -37,7 +37,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
                 getApplicationContext(),
                 AppDatabase.class,
                 "student_planner_database"
-        ).build();
+        ).fallbackToDestructiveMigration().build();
         databaseExecutor = Executors.newSingleThreadExecutor();
         editTaskLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
