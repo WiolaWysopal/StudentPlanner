@@ -27,6 +27,10 @@ public class TaskDetailsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> editTaskLauncher;
     private Task currentTask;
 
+    private TextView taskTitleTextView;
+    private TextView taskDescriptionTextView;
+    private TextView taskDueDateTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,26 +60,18 @@ public class TaskDetailsActivity extends AppCompatActivity {
                         databaseExecutor.execute(() -> {
                             database.taskDao().update(currentTask);
 
-                            runOnUiThread(() -> {
-                                TextView taskTitleTextView = findViewById(R.id.taskDetailsTaskTitleTextView);
-                                TextView taskDescriptionTextView = findViewById(R.id.taskDetailsDescriptionTextView);
-                                TextView taskDueDateTextView = findViewById(R.id.taskDetailsDueDateTextView);
-
-                                taskTitleTextView.setText(currentTask.getTitle());
-                                taskDescriptionTextView.setText(currentTask.getDescription());
-                                taskDueDateTextView.setText(currentTask.getDueDate());
-                            });
+                            runOnUiThread(this::displayTaskDetails);
                         });
                     }
                 }
         );
-        TextView taskTitleTextView =
+        taskTitleTextView =
                 findViewById(R.id.taskDetailsTaskTitleTextView);
 
-        TextView taskDescriptionTextView =
+        taskDescriptionTextView =
                 findViewById(R.id.taskDetailsDescriptionTextView);
 
-        TextView taskDueDateTextView =
+        taskDueDateTextView =
                 findViewById(R.id.taskDetailsDueDateTextView);
 
         Button editTaskButton =
@@ -107,11 +103,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
         databaseExecutor.execute(() -> {
             currentTask = database.taskDao().getById(taskId);
             if (currentTask != null) {
-                runOnUiThread(() -> {
-                    taskTitleTextView.setText(currentTask.getTitle());
-                    taskDescriptionTextView.setText(currentTask.getDescription());
-                    taskDueDateTextView.setText(currentTask.getDueDate());
-                });
+                runOnUiThread(this::displayTaskDetails);
             }
         });
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -119,5 +111,27 @@ public class TaskDetailsActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    private void displayTaskDetails() {
+        if (currentTask == null) {
+            return;
+        }
+
+        taskTitleTextView.setText(currentTask.getTitle());
+
+        String description = currentTask.getDescription();
+        if (description == null || description.isEmpty()) {
+            taskDescriptionTextView.setText(R.string.no_task_description);
+        } else {
+            taskDescriptionTextView.setText(description);
+        }
+
+        String dueDate = currentTask.getDueDate();
+        if (dueDate == null || dueDate.isEmpty()) {
+            taskDueDateTextView.setText(R.string.no_task_due_date);
+        } else {
+            taskDueDateTextView.setText(dueDate);
+        }
     }
 }
