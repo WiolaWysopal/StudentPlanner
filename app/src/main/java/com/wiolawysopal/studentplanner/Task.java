@@ -13,10 +13,13 @@ public class Task {
     private String description;
     private String dueDate;
 
-    public Task(String title, String description, String dueDate) {
+    private String subject;
+
+    public Task(String title, String description, String dueDate, String subject) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
+        this.subject = subject;
     }
 
     public int getId() {
@@ -29,7 +32,7 @@ public class Task {
 
     public String getTitle() {
         return title;
-    };
+    }
 
     public void setTitle(String title) {
         this.title = title;
@@ -49,5 +52,13 @@ public class Task {
 
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }

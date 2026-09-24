@@ -24,4 +24,7 @@
     <string name="task_due_date_label">Due date</string>
     <string name="no_task_description">No description</string>
     <string name="no_task_due_date">No due date</string>
+    <string name="task_subject_hint">Subject</string>
+    <string name="no_task_subject">No subject</string>
+    <string name="task_subject_label">Subject</string>
 </resources>
