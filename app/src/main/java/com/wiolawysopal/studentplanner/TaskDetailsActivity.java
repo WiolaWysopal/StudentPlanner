@@ -30,6 +30,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
     private TextView taskTitleTextView;
     private TextView taskDescriptionTextView;
     private TextView taskDueDateTextView;
+    private TextView taskSubjectTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +52,13 @@ public class TaskDetailsActivity extends AppCompatActivity {
                                 .getStringExtra(AddTaskActivity.EXTRA_TASK_TITLE);
                         String updatedDescription = result.getData()
                                 .getStringExtra(AddTaskActivity.EXTRA_TASK_DESCRIPTION);
-
                         String updatedDueDate = result.getData()
                                 .getStringExtra(AddTaskActivity.EXTRA_TASK_DUE_DATE);
+                        String updatedSubject = result.getData().getStringExtra(AddTaskActivity.EXTRA_TASK_SUBJECT);
                         currentTask.setTitle(updatedTitle);
                         currentTask.setDescription(updatedDescription);
                         currentTask.setDueDate(updatedDueDate);
+                        currentTask.setSubject(updatedSubject);
                         databaseExecutor.execute(() -> {
                             database.taskDao().update(currentTask);
 
@@ -67,6 +69,8 @@ public class TaskDetailsActivity extends AppCompatActivity {
         );
         taskTitleTextView =
                 findViewById(R.id.taskDetailsTaskTitleTextView);
+
+        taskSubjectTextView = findViewById(R.id.taskDetailsSubjectTextView);
 
         taskDescriptionTextView =
                 findViewById(R.id.taskDetailsDescriptionTextView);
@@ -96,6 +100,10 @@ public class TaskDetailsActivity extends AppCompatActivity {
                     AddTaskActivity.EXTRA_EDIT_TASK_DUE_DATE,
                     currentTask.getDueDate()
             );
+            intent.putExtra(
+                    AddTaskActivity.EXTRA_EDIT_TASK_SUBJECT,
+                    currentTask.getSubject()
+            );
 
             editTaskLauncher.launch(intent);
         });
@@ -119,6 +127,14 @@ public class TaskDetailsActivity extends AppCompatActivity {
         }
 
         taskTitleTextView.setText(currentTask.getTitle());
+
+        String subject = currentTask.getSubject();
+
+        if (subject == null || subject.isEmpty()) {
+            taskSubjectTextView.setText(R.string.no_task_subject);
+        } else {
+            taskSubjectTextView.setText(subject);
+        }
 
         String description = currentTask.getDescription();
         if (description == null || description.isEmpty()) {

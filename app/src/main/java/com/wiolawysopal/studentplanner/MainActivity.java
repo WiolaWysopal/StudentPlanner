@@ -98,7 +98,9 @@ public class MainActivity extends AppCompatActivity {
                         String taskDueDate = result.getData()
                                 .getStringExtra(AddTaskActivity.EXTRA_TASK_DUE_DATE);
 
-                        Task task = new Task(taskTitle, taskDescription, taskDueDate);
+                        String taskSubject = result.getData().getStringExtra(AddTaskActivity.EXTRA_TASK_SUBJECT);
+
+                        Task task = new Task(taskTitle, taskDescription, taskDueDate, taskSubject);
 
                         databaseExecutor.execute(() -> {
                             long taskId = database.taskDao().insert(task);

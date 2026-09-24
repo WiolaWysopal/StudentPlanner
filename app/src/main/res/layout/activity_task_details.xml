@@ -23,6 +23,32 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/taskDetailsSubjectLabelTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/task_subject_label"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/taskDetailsTaskTitleTextView" />
+
+    <TextView
+        android:id="@+id/taskDetailsSubjectTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/taskDetailsSubjectLabelTextView"
+        tools:text="Operating Systems" />
+
+    <TextView
         android:id="@+id/taskDetailsTaskTitleTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -47,7 +73,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/taskDetailsTaskTitleTextView" />
+        app:layout_constraintTop_toBottomOf="@id/taskDetailsSubjectTextView" />
 
     <TextView
         android:id="@+id/taskDetailsDescriptionTextView"
