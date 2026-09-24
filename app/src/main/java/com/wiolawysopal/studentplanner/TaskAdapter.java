@@ -37,6 +37,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = tasks.get(position);
         holder.taskTitleTextView.setText(task.getTitle());
+        String subject = task.getSubject();
+        if (subject == null || subject.isEmpty()) {
+            holder.taskSubjectTextView.setVisibility(View.GONE);
+        } else {
+            holder.taskSubjectTextView.setVisibility(View.VISIBLE);
+            holder.taskSubjectTextView.setText(subject);
+        }
         holder.itemView.setOnClickListener(v -> {
             listener.onTaskClick(task);
         });
@@ -52,11 +59,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView taskTitleTextView;
+        TextView taskSubjectTextView;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
 
             taskTitleTextView = itemView.findViewById(R.id.taskTitleTextView);
+            taskSubjectTextView = itemView.findViewById(R.id.taskSubjectTextView);
         }
     }
 }
