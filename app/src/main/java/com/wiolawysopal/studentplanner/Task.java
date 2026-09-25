@@ -14,12 +14,14 @@ public class Task {
     private String dueDate;
 
     private String subject;
+    private boolean completed;
 
     public Task(String title, String description, String dueDate, String subject) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.subject = subject;
+        this.completed = false;
     }
 
     public int getId() {
@@ -60,5 +62,13 @@ public class Task {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }
