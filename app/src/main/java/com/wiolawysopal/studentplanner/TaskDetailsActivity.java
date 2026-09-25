@@ -19,6 +19,8 @@ import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 
+import android.widget.CheckBox;
+
 public class TaskDetailsActivity extends AppCompatActivity {
     public static final String EXTRA_TASK_ID = "TASK_ID";
     private AppDatabase database;
@@ -31,6 +33,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
     private TextView taskDescriptionTextView;
     private TextView taskDueDateTextView;
     private TextView taskSubjectTextView;
+    private CheckBox taskCompletedCheckBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,9 @@ public class TaskDetailsActivity extends AppCompatActivity {
 
         taskDueDateTextView =
                 findViewById(R.id.taskDetailsDueDateTextView);
+
+        taskCompletedCheckBox =
+                findViewById(R.id.taskDetailsCompletedCheckBox);
 
         Button editTaskButton =
                 findViewById(R.id.editTaskButton);
@@ -127,6 +133,17 @@ public class TaskDetailsActivity extends AppCompatActivity {
         }
 
         taskTitleTextView.setText(currentTask.getTitle());
+
+        taskCompletedCheckBox.setOnCheckedChangeListener(null);
+        taskCompletedCheckBox.setChecked(currentTask.isCompleted());
+
+        taskCompletedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            currentTask.setCompleted(isChecked);
+
+            databaseExecutor.execute(() -> {
+                database.taskDao().update(currentTask);
+            });
+        });
 
         String subject = currentTask.getSubject();
 
