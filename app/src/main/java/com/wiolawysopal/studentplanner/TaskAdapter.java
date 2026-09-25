@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.graphics.Paint;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private ArrayList<Task> tasks;
@@ -44,11 +45,20 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = tasks.get(position);
         holder.taskTitleTextView.setText(task.getTitle());
+
+        if (task.isCompleted()) {
+            holder.taskTitleTextView.setPaintFlags(holder.taskTitleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            holder.taskTitleTextView.setPaintFlags(holder.taskTitleTextView.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+
         holder.taskCompletedCheckBox.setOnCheckedChangeListener(null);
         holder.taskCompletedCheckBox.setChecked(task.isCompleted());
 
         holder.taskCompletedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            task.setCompleted(isChecked);
             completionChangeListener.onTaskCompletionChanged(task, isChecked);
+            notifyItemChanged(holder.getBindingAdapterPosition());
         });
 
         String subject = task.getSubject();
