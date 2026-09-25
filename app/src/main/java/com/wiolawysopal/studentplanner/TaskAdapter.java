@@ -7,15 +7,18 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private ArrayList<Task> tasks;
     private OnTaskClickListener listener;
     private OnTaskLongClickListener longClickListener;
-    public TaskAdapter(ArrayList<Task> tasks, OnTaskClickListener listener, OnTaskLongClickListener longClickListener) {
+    private OnTaskCompletionChangeListener completionChangeListener;
+    public TaskAdapter(ArrayList<Task> tasks, OnTaskClickListener listener, OnTaskLongClickListener longClickListener, OnTaskCompletionChangeListener completionChangeListener) {
         this.tasks = tasks;
         this.listener = listener;
         this.longClickListener = longClickListener;
+        this.completionChangeListener = completionChangeListener;
     }
 
     @NonNull
@@ -33,10 +36,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         void onTaskLongClick(Task task);
     }
 
+    public interface  OnTaskCompletionChangeListener {
+        void onTaskCompletionChanged(Task task, boolean completed);
+    }
+
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = tasks.get(position);
         holder.taskTitleTextView.setText(task.getTitle());
+        holder.taskCompletedCheckBox.setOnCheckedChangeListener(null);
+        holder.taskCompletedCheckBox.setChecked(task.isCompleted());
+
+        holder.taskCompletedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            completionChangeListener.onTaskCompletionChanged(task, isChecked);
+        });
+
         String subject = task.getSubject();
         if (subject == null || subject.isEmpty()) {
             holder.taskSubjectTextView.setVisibility(View.GONE);
@@ -60,12 +74,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView taskTitleTextView;
         TextView taskSubjectTextView;
+        CheckBox taskCompletedCheckBox;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
 
             taskTitleTextView = itemView.findViewById(R.id.taskTitleTextView);
             taskSubjectTextView = itemView.findViewById(R.id.taskSubjectTextView);
+            taskCompletedCheckBox = itemView.findViewById(R.id.taskCompletedCheckBox);
         }
     }
 }

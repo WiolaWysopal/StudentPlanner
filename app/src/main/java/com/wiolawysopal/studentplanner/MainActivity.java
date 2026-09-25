@@ -76,6 +76,13 @@ public class MainActivity extends AppCompatActivity {
                             })
                             .setNegativeButton(R.string.cancel, null)
                             .show();
+                },
+                (task, completed) -> {
+                    task.setCompleted(completed);
+
+                    databaseExecutor.execute(() -> {
+                        database.taskDao().update(task);
+                    });
                 }
         );
 
