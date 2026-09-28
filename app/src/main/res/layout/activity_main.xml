@@ -42,6 +42,16 @@
         app:layout_constraintTop_toBottomOf="@id/subtitleTextView"
         />
 
+    <Button
+        android:id="@+id/sortTasksButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:text="@string/sort_tasks"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tasksTitleTextView"
+        app:layout_constraintBottom_toBottomOf="@id/tasksTitleTextView" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tasksRecyclerView"
         android:layout_width="0dp"

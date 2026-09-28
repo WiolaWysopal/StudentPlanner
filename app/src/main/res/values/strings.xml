@@ -28,4 +28,5 @@
     <string name="no_task_subject">No subject</string>
     <string name="task_subject_label">Subject</string>
     <string name="task_completed">Completed</string>
+    <string name="sort_tasks">Sort</string>
 </resources>
