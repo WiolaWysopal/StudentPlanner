@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         databaseExecutor.execute(() -> {
-            List<Task> savedTasks = database.taskDao().getAll();
+            List<Task> savedTasks = database.taskDao().getAllSortedByDueDate();
 
             runOnUiThread(() -> {
                 tasks.clear();
