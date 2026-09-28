@@ -30,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView emptyTasksHintTextView;
     private TaskAdapter taskAdapter;
 
+//    0 = Due date
+//    1 = Newest
+//    2 = Oldest
+    private int currentSort = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,6 +138,41 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        Button sortTasksButton = findViewById(R.id.sortTasksButton);
+
+        sortTasksButton.setOnClickListener(v -> {
+            String[] sortOptions = {
+                    getString(R.string.sort_due_date),
+                    getString(R.string.sort_newest),
+                    getString(R.string.sort_oldest)
+            };
+
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.sort_by)
+                    .setItems(sortOptions, (dialog, which) -> {
+                        currentSort = which;
+                        databaseExecutor.execute(() -> {
+                            List<Task> sortedTasks;
+
+                            if (which == 0) {
+                                sortedTasks = database.taskDao().getAllSortedByDueDate();
+                            } else if (which == 1) {
+                                sortedTasks = database.taskDao().getAllSortedByNewest();
+                            } else {
+                                sortedTasks = database.taskDao().getAllSortedByOldest();
+                            }
+
+                            runOnUiThread(() -> {
+                                tasks.clear();
+                                tasks.addAll(sortedTasks);
+                                taskAdapter.notifyDataSetChanged();
+                                updateEmptyState();
+                            });
+                        });
+                    })
+                    .show();
+        });
     }
 
     @Override
@@ -144,7 +184,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         databaseExecutor.execute(() -> {
-            List<Task> savedTasks = database.taskDao().getAllSortedByDueDate();
+            List<Task> savedTasks;
+
+            if (currentSort == 0) {
+                savedTasks = database.taskDao().getAllSortedByDueDate();
+            } else if (currentSort == 1) {
+                savedTasks = database.taskDao().getAllSortedByNewest();
+            } else {
+                savedTasks = database.taskDao().getAllSortedByOldest();
+            }
 
             runOnUiThread(() -> {
                 tasks.clear();
@@ -164,5 +212,7 @@ public class MainActivity extends AppCompatActivity {
             emptyTasksHintTextView.setVisibility(View.GONE);
         }
     }
+
+
 
 }
