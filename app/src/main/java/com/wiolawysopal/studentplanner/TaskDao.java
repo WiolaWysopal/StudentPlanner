@@ -21,6 +21,17 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks ORDER BY id ASC")
     List<Task> getAll();
 
+    @Query("SELECT * FROM tasks ORDER BY " +
+            "CASE WHEN dueDate IS NULL OR dueDate = '' THEN 1 ELSE 0 END, " +
+            "substr(dueDate, 7, 4) || substr(dueDate, 4, 2) || substr(dueDate, 1, 2) ASC")
+    List<Task> getAllSortedByDueDate();
+
+    @Query("SELECT * FROM tasks ORDER BY id DESC")
+    List<Task> getAllSortedByNewest();
+
+    @Query("SELECT * FROM tasks ORDER BY id ASC")
+    List<Task> getAllSortedByOldest();
+
     @Query("SELECT * FROM tasks WHERE id = :id LIMIT 1")
     Task getById(int id);
 }
