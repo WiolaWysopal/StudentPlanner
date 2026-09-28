@@ -28,6 +28,14 @@ The project is being developed as a practical way to learn Android application d
 
 * Visually distinguish completed tasks with a strikethrough title
 
+* Sort tasks by due date
+
+* Sort tasks from newest to oldest
+
+* Sort tasks from oldest to newest
+
+* Keep the selected sorting option when returning from the task details screen
+
 * Display tasks in a RecyclerView
 
 * Delete tasks with a confirmation dialog
@@ -46,9 +54,9 @@ The project is being developed as a practical way to learn Android application d
 
 ## 🔮 Planned Features
 
-* Organize tasks by subject and due date
+* Organize and filter tasks by subject
 
-* Add sorting and filtering options
+* Add additional filtering options
 
 * Display reminders for upcoming deadlines
 
@@ -74,7 +82,7 @@ The project is being developed as a practical way to learn Android application d
 
 🚧 **In development**
 
-The core task management flow is implemented, including task creation, task details, editing, deletion, local persistence, subject assignment, task completion, and task display.
+The core task management flow is implemented, including task creation, task details, editing, deletion, local persistence, subject assignment, task completion, task sorting, and task display.
 
 The application currently supports the basic CRUD operations for tasks:
 
@@ -92,7 +100,9 @@ Tasks can include an optional subject, description, and due date. Subjects are d
 
 Tasks can be marked as completed from both the main task list and the task details screen. Completion status is persisted in Room Database and restored after restarting the application. Completed tasks are visually distinguished in the main task list with a strikethrough title.
 
-Further development will focus on organizing tasks by subject and due date, sorting and filtering, and reminders for upcoming deadlines.
+Tasks can be sorted directly from the main screen using the **Sort** button. The application supports sorting tasks by due date, from newest to oldest, and from oldest to newest. Tasks without a due date are placed after tasks with due dates when sorting by due date. The selected sorting option is preserved when opening a task and returning to the main screen.
+
+Further development will focus on filtering and organizing tasks by subject, additional filtering options, and reminders for upcoming deadlines.
 
 ## 📋 Requirements
 
