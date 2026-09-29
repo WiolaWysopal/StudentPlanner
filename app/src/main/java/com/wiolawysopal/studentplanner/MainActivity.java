@@ -56,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
 
         tasks = new ArrayList<>();
 
+        if (savedInstanceState != null) {
+            currentSort = savedInstanceState.getInt("current_sort", 0);
+            currentFilter = savedInstanceState.getInt("current_filter", 0);
+        }
+
         RecyclerView tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         taskAdapter = new TaskAdapter(
                 tasks,
@@ -92,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
 
                     databaseExecutor.execute(() -> {
                         database.taskDao().update(task);
+
+                        if (currentFilter != 0) {
+                            runOnUiThread(this::loadTasks);
+                        }
                     });
                 }
         );
@@ -179,6 +188,14 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .show();
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt("current_sort", currentSort);
+        outState.putInt("current_filter", currentFilter);
     }
 
     @Override
