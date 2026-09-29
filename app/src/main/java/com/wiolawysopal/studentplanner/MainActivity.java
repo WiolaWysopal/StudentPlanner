@@ -30,10 +30,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView emptyTasksHintTextView;
     private TaskAdapter taskAdapter;
 
-//    0 = Due date
-//    1 = Newest
-//    2 = Oldest
+    //    0 = Due date
+    //    1 = Newest
+    //    2 = Oldest
     private int currentSort = 0;
+
+    // 0 = All
+    // 1 = Active
+    // 2 = Completed
+    private int currentFilter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
         databaseExecutor = Executors.newSingleThreadExecutor();
 
         tasks = new ArrayList<>();
+
+        if (savedInstanceState != null) {
+            currentSort = savedInstanceState.getInt("current_sort", 0);
+            currentFilter = savedInstanceState.getInt("current_filter", 0);
+        }
 
         RecyclerView tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         taskAdapter = new TaskAdapter(
@@ -87,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
 
                     databaseExecutor.execute(() -> {
                         database.taskDao().update(task);
+
+                        if (currentFilter != 0) {
+                            runOnUiThread(this::loadTasks);
+                        }
                     });
                 }
         );
@@ -128,6 +142,24 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
+        Button filterTasksButton = findViewById(R.id.filterTasksButton);
+
+        filterTasksButton.setOnClickListener(v -> {
+            String[] filterOptions = {
+                    getString(R.string.filter_all),
+                    getString(R.string.filter_active),
+                    getString(R.string.filter_completed)
+            };
+
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.filter_by)
+                    .setItems(filterOptions, (dialog, which) -> {
+                        currentFilter = which;
+                        loadTasks();
+                    })
+                    .show();
+        });
+
         Button addTaskButton = findViewById(R.id.addTaskButton);
         addTaskButton.setOnClickListener(v -> {
            Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
@@ -152,27 +184,18 @@ public class MainActivity extends AppCompatActivity {
                     .setTitle(R.string.sort_by)
                     .setItems(sortOptions, (dialog, which) -> {
                         currentSort = which;
-                        databaseExecutor.execute(() -> {
-                            List<Task> sortedTasks;
-
-                            if (which == 0) {
-                                sortedTasks = database.taskDao().getAllSortedByDueDate();
-                            } else if (which == 1) {
-                                sortedTasks = database.taskDao().getAllSortedByNewest();
-                            } else {
-                                sortedTasks = database.taskDao().getAllSortedByOldest();
-                            }
-
-                            runOnUiThread(() -> {
-                                tasks.clear();
-                                tasks.addAll(sortedTasks);
-                                taskAdapter.notifyDataSetChanged();
-                                updateEmptyState();
-                            });
-                        });
+                        loadTasks();
                     })
                     .show();
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt("current_sort", currentSort);
+        outState.putInt("current_filter", currentFilter);
     }
 
     @Override
@@ -183,24 +206,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        databaseExecutor.execute(() -> {
-            List<Task> savedTasks;
-
-            if (currentSort == 0) {
-                savedTasks = database.taskDao().getAllSortedByDueDate();
-            } else if (currentSort == 1) {
-                savedTasks = database.taskDao().getAllSortedByNewest();
-            } else {
-                savedTasks = database.taskDao().getAllSortedByOldest();
-            }
-
-            runOnUiThread(() -> {
-                tasks.clear();
-                tasks.addAll(savedTasks);
-                taskAdapter.notifyDataSetChanged();
-                updateEmptyState();
-            });
-        });
+        loadTasks();
     }
 
     private void updateEmptyState() {
@@ -213,6 +219,35 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void loadTasks() {
+        databaseExecutor.execute(() -> {
+            List<Task> savedTasks;
 
+            if (currentSort == 0) {
+                savedTasks = database.taskDao().getAllSortedByDueDate();
+            } else if (currentSort == 1) {
+                savedTasks = database.taskDao().getAllSortedByNewest();
+            } else {
+                savedTasks = database.taskDao().getAllSortedByOldest();
+            }
+
+            List<Task> filteredTasks = new ArrayList<>();
+
+            for (Task task : savedTasks) {
+                if (currentFilter == 0
+                        || (currentFilter == 1 && !task.isCompleted())
+                        || (currentFilter == 2 && task.isCompleted())) {
+                    filteredTasks.add(task);
+                }
+            }
+
+            runOnUiThread(() -> {
+                tasks.clear();
+                tasks.addAll(filteredTasks);
+                taskAdapter.notifyDataSetChanged();
+                updateEmptyState();
+            });
+        });
+    }
 
 }

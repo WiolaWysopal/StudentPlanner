@@ -43,6 +43,16 @@
         />
 
     <Button
+        android:id="@+id/filterTasksButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/filter_tasks"
+        app:layout_constraintEnd_toStartOf="@id/sortTasksButton"
+        app:layout_constraintTop_toTopOf="@id/tasksTitleTextView"
+        app:layout_constraintBottom_toBottomOf="@id/tasksTitleTextView" />
+
+    <Button
         android:id="@+id/sortTasksButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
