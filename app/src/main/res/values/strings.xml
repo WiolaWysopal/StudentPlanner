@@ -38,4 +38,5 @@
     <string name="filter_all">All</string>
     <string name="filter_active">Active</string>
     <string name="filter_completed">Completed</string>
+    <string name="filter_subject">Subject</string>
 </resources>
