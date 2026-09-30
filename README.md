@@ -38,11 +38,19 @@ The project is being developed as a practical way to learn Android application d
 
 * Display all, active, or completed tasks
 
+* Filter tasks by subject
+
+* Display subjects dynamically based on existing tasks
+
+* Display all subjects or tasks from a selected subject
+
+* Combine subject filtering with completion status filtering
+
 * Combine task filtering with sorting options
 
 * Keep the selected filtering and sorting options when returning from the task details screen
 
-* Preserve the selected filtering and sorting options when the main activity is recreated
+* Preserve the selected subject, filtering, and sorting options when the main activity is recreated
 
 * Display tasks in a RecyclerView
 
@@ -56,13 +64,11 @@ The project is being developed as a practical way to learn Android application d
 
 * Automatically refresh task data after editing
 
-* Display an empty state when no tasks match the selected filter
+* Display an empty state when no tasks match the selected filters
 
 * Validate task titles before saving
 
 ## 🔮 Planned Features
-
-* Organize and filter tasks by subject
 
 * Add additional filtering options
 
@@ -90,7 +96,7 @@ The project is being developed as a practical way to learn Android application d
 
 🚧 **In development**
 
-The core task management flow is implemented, including task creation, task details, editing, deletion, local persistence, subject assignment, task completion, task sorting, task filtering, and task display.
+The core task management flow is implemented, including task creation, task details, editing, deletion, local persistence, subject assignment, task completion, task sorting, task filtering, subject filtering, and task display.
 
 The application currently supports the basic CRUD operations for tasks:
 
@@ -110,11 +116,15 @@ Tasks can be marked as completed from both the main task list and the task detai
 
 Tasks can be sorted directly from the main screen using the **Sort** button. The application supports sorting tasks by due date, from newest to oldest, and from oldest to newest. Tasks without a due date are placed after tasks with due dates when sorting by due date.
 
-Tasks can be filtered directly from the main screen using the **Filter** button. The application supports displaying all tasks, only active tasks, or only completed tasks. Filtering works together with the existing sorting options, allowing the currently visible tasks to remain sorted by due date, newest, or oldest.
+Tasks can be filtered by completion status directly from the main screen using the **Filter** button. The application supports displaying all tasks, only active tasks, or only completed tasks.
 
-When a task's completion status changes while the Active or Completed filter is selected, the task list is automatically refreshed to reflect the selected filter. The selected filtering and sorting options are also preserved when returning from task details and when the main activity is recreated.
+Tasks can also be filtered by subject using the **Subject** button. Available subjects are generated dynamically from the subjects assigned to existing tasks. Users can display tasks from a selected subject or return to **All subjects**.
 
-Further development will focus on organizing and filtering tasks by subject, additional filtering options, and reminders for upcoming deadlines.
+Subject filtering works together with completion status filtering and the existing sorting options. For example, users can display only active tasks from a selected subject while keeping them sorted by due date, newest, or oldest.
+
+When a task's completion status changes while the Active or Completed filter is selected, the task list is automatically refreshed to reflect the selected filter. The selected subject, completion status filter, and sorting option are preserved when the main activity is recreated.
+
+Further development will focus on additional filtering options and reminders for upcoming deadlines.
 
 ## 📋 Requirements
 
