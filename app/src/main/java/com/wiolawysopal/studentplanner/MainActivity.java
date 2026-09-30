@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     // 1 = Active
     // 2 = Completed
     private int currentFilter = 0;
+    // null = All subjects
+    private String currentSubject = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             currentSort = savedInstanceState.getInt("current_sort", 0);
             currentFilter = savedInstanceState.getInt("current_filter", 0);
+            currentSubject = savedInstanceState.getString("current_subject");
         }
 
         RecyclerView tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
@@ -142,6 +145,45 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
+        Button subjectFilterButton = findViewById(R.id.subjectFilterButton);
+
+        subjectFilterButton.setOnClickListener(v -> {
+            databaseExecutor.execute(() -> {
+                List<Task> allTasks = database.taskDao().getAllSortedByDueDate();
+
+                List<String> subjects = new ArrayList<>();
+
+                for (Task task : allTasks) {
+                    String subject = task.getSubject();
+
+                    if (subject != null
+                            && !subject.trim().isEmpty()
+                            && !subjects.contains(subject)) {
+                        subjects.add(subject);
+                    }
+                }
+
+                runOnUiThread(() -> {
+                    List<String> options = new ArrayList<>();
+                    options.add(getString(R.string.all_subjects));
+                    options.addAll(subjects);
+
+                    new AlertDialog.Builder(this)
+                            .setTitle(R.string.filter_by_subject)
+                            .setItems(options.toArray(new String[0]), (dialog, which) -> {
+                                if (which == 0) {
+                                    currentSubject = null;
+                                } else {
+                                    currentSubject = options.get(which);
+                                }
+
+                                loadTasks();
+                            })
+                            .show();
+                });
+            });
+        });
+
         Button filterTasksButton = findViewById(R.id.filterTasksButton);
 
         filterTasksButton.setOnClickListener(v -> {
@@ -196,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
 
         outState.putInt("current_sort", currentSort);
         outState.putInt("current_filter", currentFilter);
+        outState.putString("current_subject", currentSubject);
     }
 
     @Override
@@ -234,9 +277,16 @@ public class MainActivity extends AppCompatActivity {
             List<Task> filteredTasks = new ArrayList<>();
 
             for (Task task : savedTasks) {
-                if (currentFilter == 0
-                        || (currentFilter == 1 && !task.isCompleted())
-                        || (currentFilter == 2 && task.isCompleted())) {
+                boolean matchesStatus =
+                        currentFilter == 0
+                                || (currentFilter == 1 && !task.isCompleted())
+                                || (currentFilter == 2 && task.isCompleted());
+
+                boolean matchesSubject =
+                        currentSubject == null
+                                || currentSubject.equals(task.getSubject());
+
+                if (matchesStatus && matchesSubject) {
                     filteredTasks.add(task);
                 }
             }
