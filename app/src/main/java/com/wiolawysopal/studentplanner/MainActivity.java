@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             currentSort = savedInstanceState.getInt("current_sort", 0);
             currentFilter = savedInstanceState.getInt("current_filter", 0);
+            currentSubject = savedInstanceState.getString("current_subject");
         }
 
         RecyclerView tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
@@ -237,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
 
         outState.putInt("current_sort", currentSort);
         outState.putInt("current_filter", currentFilter);
+        outState.putString("current_subject", currentSubject);
     }
 
     @Override
