@@ -32,6 +32,8 @@ import android.os.Build;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.content.SharedPreferences;
+
 public class MainActivity extends AppCompatActivity {
     private static final int NOTIFICATION_PERMISSION_REQUEST_CODE = 1001;
     private ActivityResultLauncher<Intent> addTaskLauncher;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     // 3 = Overdue
     // 4 = No due date
     private int currentDueDateFilter = 0;
+    private SharedPreferences reminderPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationHelper.createNotificationChannel(this);
         requestNotificationPermission();
+        reminderPreferences = getSharedPreferences(
+                "deadline_reminders",
+                MODE_PRIVATE
+        );
 
         database = Room.databaseBuilder(
                 getApplicationContext(),
@@ -337,6 +344,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            checkUpcomingDeadlines(savedTasks);
+
             runOnUiThread(() -> {
                 tasks.clear();
                 tasks.addAll(filteredTasks);
@@ -404,6 +413,73 @@ public class MainActivity extends AppCompatActivity {
                         new String[]{Manifest.permission.POST_NOTIFICATIONS},
                         NOTIFICATION_PERMISSION_REQUEST_CODE
                 );
+            }
+        }
+    }
+
+    private void checkUpcomingDeadlines(List<Task> taskList) {
+        SimpleDateFormat dateFormat =
+                new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+
+        dateFormat.setLenient(false);
+
+        Date today;
+
+        try {
+            today = dateFormat.parse(dateFormat.format(new Date()));
+        } catch (ParseException e) {
+            return;
+        }
+
+        if (today == null) {
+            return;
+        }
+
+        long oneDayInMillis = 24 * 60 * 60 * 1000L;
+
+        for (Task task : taskList) {
+            if (task.isCompleted()) {
+                continue;
+            }
+
+            String dueDate = task.getDueDate();
+
+            if (dueDate == null || dueDate.trim().isEmpty()) {
+                continue;
+            }
+
+            try {
+                Date taskDate = dateFormat.parse(dueDate);
+
+                if (taskDate == null) {
+                    continue;
+                }
+
+                long difference = taskDate.getTime() - today.getTime();
+                long daysUntilDue = difference / oneDayInMillis;
+
+                if (daysUntilDue >= 0 && daysUntilDue <= 1) {
+                    String reminderKey =
+                            "task_" + task.getId() + "_" + task.getDueDate();
+
+                    boolean reminderSent =
+                            reminderPreferences.getBoolean(reminderKey, false);
+
+                    if (!reminderSent) {
+                        NotificationHelper.showDeadlineNotification(
+                                this,
+                                task.getId(),
+                                task.getTitle(),
+                                task.getDueDate()
+                        );
+
+                        reminderPreferences.edit()
+                                .putBoolean(reminderKey, true)
+                                .apply();
+                    }
+                }
+
+            } catch (ParseException ignored) {
             }
         }
     }
