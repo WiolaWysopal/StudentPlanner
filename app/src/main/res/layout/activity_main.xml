@@ -41,35 +41,53 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/subtitleTextView"
         />
+    <Button
+        android:id="@+id/dueDateFilterButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:text="@string/filter_due_date"
+        app:layout_constraintEnd_toStartOf="@id/subjectFilterButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tasksTitleTextView"
+        app:layout_constraintHorizontal_chainStyle="spread_inside" />
 
     <Button
         android:id="@+id/subjectFilterButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:text="@string/filter_subject"
         app:layout_constraintEnd_toStartOf="@id/filterTasksButton"
+        app:layout_constraintStart_toEndOf="@id/dueDateFilterButton"
         app:layout_constraintTop_toBottomOf="@id/tasksTitleTextView" />
 
     <Button
         android:id="@+id/filterTasksButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:text="@string/filter_tasks"
         app:layout_constraintEnd_toStartOf="@id/sortTasksButton"
+        app:layout_constraintStart_toEndOf="@id/subjectFilterButton"
         app:layout_constraintTop_toBottomOf="@id/tasksTitleTextView" />
 
     <Button
         android:id="@+id/sortTasksButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:text="@string/sort_tasks"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/filterTasksButton"
         app:layout_constraintTop_toBottomOf="@id/tasksTitleTextView" />
 
     <androidx.recyclerview.widget.RecyclerView
