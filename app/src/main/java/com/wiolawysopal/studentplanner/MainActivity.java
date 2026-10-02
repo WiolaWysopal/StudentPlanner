@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        NotificationHelper.createNotificationChannel(this);
+
         database = Room.databaseBuilder(
                 getApplicationContext(),
                 AppDatabase.class,
