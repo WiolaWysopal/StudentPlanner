@@ -41,4 +41,5 @@
     <string name="filter_subject">Subject</string>
     <string name="all_subjects">All subjects</string>
     <string name="filter_by_subject">Filter by subject</string>
+    <string name="filter_due_date">Date</string>
 </resources>
