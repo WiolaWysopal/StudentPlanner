@@ -42,4 +42,10 @@
     <string name="all_subjects">All subjects</string>
     <string name="filter_by_subject">Filter by subject</string>
     <string name="filter_due_date">Date</string>
+    <string name="filter_by_due_date">Filter by due date</string>
+    <string name="filter_all_dates">All dates</string>
+    <string name="filter_today">Today</string>
+    <string name="filter_upcoming">Upcoming</string>
+    <string name="filter_overdue">Overdue</string>
+    <string name="filter_no_due_date">No due date</string>
 </resources>

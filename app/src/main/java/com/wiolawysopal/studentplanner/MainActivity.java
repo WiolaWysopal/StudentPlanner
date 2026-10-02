@@ -20,6 +20,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.room.Room;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> addTaskLauncher;
@@ -41,6 +45,13 @@ public class MainActivity extends AppCompatActivity {
     private int currentFilter = 0;
     // null = All subjects
     private String currentSubject = null;
+
+    // 0 = All dates
+    // 1 = Today
+    // 2 = Upcoming
+    // 3 = Overdue
+    // 4 = No due date
+    private int currentDueDateFilter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +155,26 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        Button dueDateFilterButton = findViewById(R.id.dueDateFilterButton);
+
+        dueDateFilterButton.setOnClickListener(v -> {
+            String[] dueDateFilterOptions = {
+                    getString(R.string.filter_all_dates),
+                    getString(R.string.filter_today),
+                    getString(R.string.filter_upcoming),
+                    getString(R.string.filter_overdue),
+                    getString(R.string.filter_no_due_date)
+            };
+
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.filter_by_due_date)
+                    .setItems(dueDateFilterOptions, (dialog, which) -> {
+                        currentDueDateFilter = which;
+                        loadTasks();
+                    })
+                    .show();
+        });
 
         Button subjectFilterButton = findViewById(R.id.subjectFilterButton);
 
@@ -286,7 +317,9 @@ public class MainActivity extends AppCompatActivity {
                         currentSubject == null
                                 || currentSubject.equals(task.getSubject());
 
-                if (matchesStatus && matchesSubject) {
+                boolean matchesDueDate = matchesDueDateFilter(task);
+
+                if (matchesStatus && matchesSubject && matchesDueDate) {
                     filteredTasks.add(task);
                 }
             }
@@ -298,6 +331,52 @@ public class MainActivity extends AppCompatActivity {
                 updateEmptyState();
             });
         });
+    }
+
+    private boolean matchesDueDateFilter(Task task) {
+        String dueDate = task.getDueDate();
+
+        if (currentDueDateFilter == 0) {
+            return true;
+        }
+
+        if (currentDueDateFilter == 4) {
+            return dueDate == null || dueDate.trim().isEmpty();
+        }
+
+        if (dueDate == null || dueDate.trim().isEmpty()) {
+            return false;
+        }
+
+        SimpleDateFormat dateFormat =
+                new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        dateFormat.setLenient(false);
+
+        try {
+            Date taskDate = dateFormat.parse(dueDate);
+            Date today = dateFormat.parse(dateFormat.format(new Date()));
+
+            if (taskDate == null || today == null) {
+                return false;
+            }
+
+            if (currentDueDateFilter == 1) {
+                return taskDate.equals(today);
+            }
+
+            if (currentDueDateFilter == 2) {
+                return taskDate.after(today);
+            }
+
+            if (currentDueDateFilter == 3) {
+                return taskDate.before(today);
+            }
+
+        } catch (ParseException e) {
+            return false;
+        }
+
+        return true;
     }
 
 }
